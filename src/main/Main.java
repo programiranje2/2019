@@ -14,7 +14,13 @@ public class Main {
         Test t = new Test();
 //        t.testKeyboardInput();
 //        t.testDirectors();
-        t.testMovies();
+//        t.testMovies();
+//        t.testIntegerAndDouble();
+//        t.testLoops();
+        t.testSwitch();
+//        t.testActor();
+//        t.testArraysOfObjects();
+//        t.testStatic();
     }
     
 }
