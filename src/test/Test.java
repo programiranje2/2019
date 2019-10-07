@@ -84,12 +84,15 @@ public class Test {
         do {
             a[i] = i + 1;
             System.out.println(a[i]);
-             i = i + 1;
+            i = i + 1;
         } while (i < a.length);
         System.out.println();
+        i = 0;
         System.out.println("foreach loop:");
         for (int i1 : a) {
-            System.out.println(i1);
+            a[i] = i1 + 10;
+            System.out.println(a[i]);
+            i++;
         }
     }
     

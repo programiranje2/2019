@@ -16,8 +16,8 @@ public class Main {
 //        t.testDirectors();
 //        t.testMovies();
 //        t.testIntegerAndDouble();
-//        t.testLoops();
-        t.testSwitch();
+        t.testLoops();
+//        t.testSwitch();
 //        t.testActor();
 //        t.testArraysOfObjects();
 //        t.testStatic();
