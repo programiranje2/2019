@@ -16,11 +16,14 @@ public class Main {
 //        t.testDirectors();
 //        t.testMovies();
 //        t.testIntegerAndDouble();
-        t.testLoops();
+//        t.testLoops();
 //        t.testSwitch();
 //        t.testActor();
 //        t.testArraysOfObjects();
 //        t.testStatic();
+//        t.testStrings();
+//        t.testStringBuffers();
+        t.testNumberFormatting();
     }
     
 }

@@ -4,6 +4,7 @@
  */
 package test;
 
+import java.text.NumberFormat;
 import java.util.Scanner;
 
 import movies.Actor;
@@ -108,6 +109,7 @@ public class Test {
     
     public void testActor() {
         Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+//        Actor peterFonda = new Actor();
         System.out.println(peterFonda);
     }
     
@@ -120,6 +122,17 @@ public class Test {
         for (Actor actor : actors) {
             System.out.println(actor.getName());
         }
+        System.out.println();
+        Director dennisHopper = new Director("Dennis Hopper", false, Nationality.USA);
+//        Movie easyRiderWithActors = new Movie("Easy Rider", 1969, dennisHopper, actors);
+        Movie easyRider = new Movie("Easy Rider", 1969, dennisHopper, actors.length);
+        int i = 0;
+        for (Actor actor : easyRider.getActors()) {
+//            System.out.println(actor);
+            actor = actors[i];
+            System.out.println(actor);
+            i++;
+        }
     }
     
     public void testStatic() {
@@ -130,8 +143,47 @@ public class Test {
         System.out.println(charlizeTheron.getName() + ": " + charlizeTheron.getDefinition());   // OK, but not typical
         System.out.println(peterFonda.getName() + ": " + peterFonda.getDefinition());           // OK, but not typical
         System.out.println("Now change the definition field for charlizeTheron...");
-        charlizeTheron.setDefinition("A person wo can pretend to be somebody else.");           // change static field for ine object
+        charlizeTheron.setDefinition("A person wo can pretend to be somebody else.");           // change static field for one object
         System.out.println(peterFonda.getName() + ": " + peterFonda.getDefinition());           // all objects share the same static field(s)
+    }
+    
+    public void testStrings() {
+        String easyRider = "Easy Rider";
+        System.out.println(easyRider);
+        System.out.println(easyRider.charAt(5));
+        System.out.println(easyRider.concat(" was released in 1969."));
+        System.out.println(easyRider.substring(5, easyRider.length()));
+        System.out.println(easyRider.startsWith("Easy"));
+        System.out.println(easyRider.endsWith("Rider"));
+        String[] words = easyRider.split(" ");
+        for (String word : words) {
+            System.out.println(word);
+        }
+        System.out.println(String.join(" ", words));
+        System.out.println(easyRider.substring(0, 4));                                          // prints "Easy" (from startIndex to endIndex - 1)
+        System.out.println(Integer.parseInt("12"));
+        System.out.println(String.valueOf(12));
+        System.out.println(String.format("%s%.3f", "String.format, 3 fraction digits: ", (double) 7/6));
+        System.out.printf("%s%.3f", "System.out.printf, 3 fraction digits: ", (double) 7/6);
+    }
+    
+    public void testStringBuffers() {
+        StringBuffer easyRider = new StringBuffer();
+        System.out.println(easyRider);
+        easyRider.append("Easy Rider");
+        System.out.println(easyRider);
+        System.out.println(easyRider.append(" was released in "));
+        System.out.println(easyRider.append(1969).append('.'));
+        System.out.println(easyRider.delete(11, 15));
+        System.out.println(easyRider.insert(11, '(').insert(easyRider.length() - 1, ')'));
+    }
+    
+    public void testNumberFormatting() {
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(3);
+        System.out.println(nf.format((double) 6/7));
+        nf.setMaximumFractionDigits(2);
+        System.out.println(nf.format((double) 6/7));
     }
 
 }

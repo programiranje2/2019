@@ -9,14 +9,14 @@ public class Movie {
     private String title;
     private int year;
     private Director director;
-    private Actor[] acctors;
+    private Actor[] actors;
     
-    public Movie(String title, int year, Director director, Actor[] starring) {
+    public Movie(String title, int year, Director director, Actor[] actors) {
         super();
         this.title = title;
         this.year = year;
         this.director = director;
-        this.acctors = starring;
+        this.actors = actors;
     }
 
     public Movie(String title, int year, Director director) {
@@ -35,6 +35,31 @@ public class Movie {
             this.director = director;
         } else {
             System.out.println("Error: a movie director cannot be null.");
+        }
+    }
+    
+    public Movie(String title, int year, Director director, int noOfActors) {
+        super();
+        if ((title != null) && (title != "")) {
+            this.title = title;
+        } else {
+            System.out.println("Error: a movie title cannot be null or empty string.");
+        }
+        if ((year >= 1893) && (year <=2019)) {
+            this.year = year;
+        } else {
+            System.out.println("Error: a movie could have been released only between 1893 and 2019.");
+        }
+        if (director != null) {
+            this.director = director;
+        } else {
+            System.out.println("Error: a movie director cannot be null.");
+        }
+        if (noOfActors >= 0) {
+            this.actors = new Actor[noOfActors];
+            for (int i = 0; i < actors.length; i++) {
+                this.actors[i] = new Actor();
+            }
         }
     }
     
@@ -79,12 +104,12 @@ public class Movie {
         }
     }
 
-    public Actor[] getStarring() {
-        return acctors;
+    public Actor[] getActors() {
+        return actors;
     }
 
-    public void setStarring(Actor[] starring) {
-        this.acctors = starring;
+    public void setActors(Actor[] actors) {
+        this.actors = actors;
     }
 
 }
