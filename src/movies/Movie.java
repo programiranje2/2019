@@ -4,19 +4,40 @@
  */
 package movies;
 
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 public class Movie {
     
     private String title;
     private int year;
     private Director director;
     private Actor[] actors;
+    private GregorianCalendar openingDate;
     
+    public Movie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate) {
+        super();
+        this.title = title;
+        this.year = year;
+        this.director = director;
+        this.actors = actors;
+        this.openingDate = openingDate;
+    }
+
     public Movie(String title, int year, Director director, Actor[] actors) {
         super();
         this.title = title;
         this.year = year;
         this.director = director;
         this.actors = actors;
+    }
+    
+    public Movie(String title, int year, Director director, Cast cast) {
+        this(title, year, director, cast.toArray());
+    }
+
+    public Movie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) {
+        this(title, year, director, cast.toArray(), openingDate);
     }
 
     public Movie(String title, int year, Director director) {
@@ -70,7 +91,17 @@ public class Movie {
     @Override
     public String toString() {
         // TODO Auto-generated method stub
-        return this.title + ", " + this.year + '\n' + this.director;
+//        return this.title + ", " + this.year + '\n' + this.director;
+        String[] actorNames = new String[this.actors.length];
+        int i = 0;
+        for (Actor actor : this.actors) {
+            actorNames[i] = actor.getName();
+            i++;
+        }
+//        return this.title + ", " + this.year + '\n' + this.director + "\nStarring: " + String.join(", ", actorNames);
+        return this.title + ", " + this.year + '\n' + this.director + 
+                "\nStarring: " + String.join(", ", actorNames) + 
+                "\nOpening date: " + (new SimpleDateFormat("EEE, MMM dd, yyyy").format(this.openingDate.getTime()));
     }
     
     public String getTitle() {
@@ -110,6 +141,14 @@ public class Movie {
 
     public void setActors(Actor[] actors) {
         this.actors = actors;
+    }
+
+    public GregorianCalendar getOpeningDate() {
+        return openingDate;
+    }
+
+    public void setOpeningDate(GregorianCalendar openingDate) {
+        this.openingDate = openingDate;
     }
 
 }

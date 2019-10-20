@@ -5,9 +5,12 @@
 package test;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import movies.Actor;
+import movies.Cast;
 import movies.Director;
 import movies.Movie;
 import util.Nationality;
@@ -126,13 +129,19 @@ public class Test {
         Director dennisHopper = new Director("Dennis Hopper", false, Nationality.USA);
 //        Movie easyRiderWithActors = new Movie("Easy Rider", 1969, dennisHopper, actors);
         Movie easyRider = new Movie("Easy Rider", 1969, dennisHopper, actors.length);
-        int i = 0;
-        for (Actor actor : easyRider.getActors()) {
-//            System.out.println(actor);
-            actor = actors[i];
-            System.out.println(actor);
-            i++;
+        for (int i = 0; i < actors.length; i++) {
+            easyRider.getActors()[i] = actors[i];
+            System.out.println(easyRider.getActors()[i]);
         }
+        System.out.println();
+        System.out.println(easyRider);
+//        int i = 0;
+//        for (Actor actor : easyRider.getActors()) {
+////            System.out.println(actor);
+//            actor = actors[i];
+//            System.out.println(actor);
+//            i++;
+//        }
     }
     
     public void testStatic() {
@@ -184,6 +193,52 @@ public class Test {
         System.out.println(nf.format((double) 6/7));
         nf.setMaximumFractionDigits(2);
         System.out.println(nf.format((double) 6/7));
+    }
+    
+    public void testArrayLists() {
+//        ArrayList<String> actorNames = new ArrayList<String>();
+//        System.out.println(actorNames);
+//        actorNames.add("Jack Nicholson");
+//        System.out.println(actorNames);
+//        actorNames.add("Peter Fonda");
+//        System.out.println(actorNames);
+//        System.out.println(String.join(", ", actorNames.toArray(new String[actorNames.size()])));
+//        System.out.println(actorNames.get(0));
+//        actorNames.remove(0);
+//        System.out.println(actorNames);
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+        Movie easyRider = new Movie("Easy Rider", 1969, dHopper, easyRiderCast);
+        System.out.println(easyRider);
+    }
+    
+    public void testGregorianCalendar() {
+//        GregorianCalendar c = new GregorianCalendar();
+//        System.out.println(c);
+//        System.out.println(c.getTime());
+//        System.out.println();
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+        Movie easyRider = new Movie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12));
+        System.out.println(easyRider);
+        System.out.println();
+        if (easyRider.getOpeningDate().before(new GregorianCalendar(2000, 0, 1))) {
+            System.out.println("It was long ago...");
+        } else {
+            System.out.println("Well, it looks kinda recent...");
+        }
     }
 
 }

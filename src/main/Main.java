@@ -23,7 +23,9 @@ public class Main {
 //        t.testStatic();
 //        t.testStrings();
 //        t.testStringBuffers();
-        t.testNumberFormatting();
+//        t.testNumberFormatting();
+//        t.testArrayLists();
+        t.testGregorianCalendar();
     }
     
 }
