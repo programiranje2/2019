@@ -10,11 +10,16 @@ import java.util.GregorianCalendar;
 import java.util.Scanner;
 
 import movies.Actor;
+import movies.AwardedRoadMovie;
 import movies.Cast;
+import movies.CrimeMovie;
 import movies.Director;
 import movies.Movie;
+import movies.RoadMovie;
+import movies.Subgenre;
 import util.Nationality;
 import util.Sex;
+import util.Vehicle;
 
 public class Test {
     
@@ -237,7 +242,81 @@ public class Test {
         if (easyRider.getOpeningDate().before(new GregorianCalendar(2000, 0, 1))) {
             System.out.println("It was long ago...");
         } else {
-            System.out.println("Well, it looks kinda recent...");
+            System.out.println("");
+        }
+    }
+    
+    public void testInheritance() {
+        Actor alPacino = new Actor("Al Pacino", Sex.MALE, 79, Nationality.USA);
+        Actor marlonBrando = new Actor("Marlon Brando", Sex.MALE, -1, Nationality.USA);
+        Director francesFordCoppola = new Director("Frances Ford Coppola", true, Nationality.USA);
+        Actor[] actors = {alPacino, marlonBrando};
+        Movie theGodfather = new Movie("The Godfather", 1970, francesFordCoppola, actors, new GregorianCalendar(1972, 2, 14));
+        
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Actor[] actors1 = {dennisHopper, peterFonda, jackNicholson};
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+        RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
+        
+        Actor williamHurt = new Actor("William Hurt", Sex.MALE, 70, Nationality.USA);
+        Actor kathleenTurner = new Actor("Kathleen Turner", Sex.FEMALE, 60, Nationality.USA);
+        Director lawrenceKasdan = new Director("Lawrence Kasdan", true, Nationality.USA);
+        Cast bodyHeatCast = new Cast();
+        easyRiderCast.addActor(williamHurt);
+        easyRiderCast.addActor(kathleenTurner);
+        CrimeMovie bodyHeat = new CrimeMovie("Body Heat", 1981, lawrenceKasdan, bodyHeatCast, new GregorianCalendar(1981, 4, 22), Subgenre.FILM_NOIR);
+        
+        AwardedRoadMovie eR = new AwardedRoadMovie("Easy Rider", 1969, dHopper, actors1, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE, "Best First Work");
+        
+        System.out.println(theGodfather);
+        System.out.println(easyRider);
+        System.out.println(eR);
+        System.out.println(bodyHeat);
+
+//        easyRider.getAwards();           // No way!!! easyRider is a RoadMovie, and RoadMovie doesn't have getAwards()
+        eR.getAwards();                 // this is OK
+        eR.getTitle();                  // this is also OK, because of the inheritance
+        
+    }
+    
+    public void testPolymorphism() {
+        Actor alPacino = new Actor("Al Pacino", Sex.MALE, 79, Nationality.USA);
+        Actor marlonBrando = new Actor("Marlon Brando", Sex.MALE, -1, Nationality.USA);
+        Director francesFordCoppola = new Director("Frances Ford Coppola", true, Nationality.USA);
+        Actor[] actors = {alPacino, marlonBrando};
+        Movie theGodfather = new Movie("The Godfather", 1970, francesFordCoppola, actors, new GregorianCalendar(1972, 2, 14));
+        
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Actor[] actors1 = {dennisHopper, peterFonda, jackNicholson};
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+        RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
+        
+        Actor williamHurt = new Actor("William Hurt", Sex.MALE, 70, Nationality.USA);
+        Actor kathleenTurner = new Actor("Kathleen Turner", Sex.FEMALE, 60, Nationality.USA);
+        Director lawrenceKasdan = new Director("Lawrence Kasdan", true, Nationality.USA);
+        Cast bodyHeatCast = new Cast();
+        easyRiderCast.addActor(williamHurt);
+        easyRiderCast.addActor(kathleenTurner);
+        CrimeMovie bodyHeat = new CrimeMovie("Body Heat", 1981, lawrenceKasdan, bodyHeatCast, new GregorianCalendar(1981, 4, 22), Subgenre.FILM_NOIR);
+        
+        AwardedRoadMovie eR = new AwardedRoadMovie("Easy Rider", 1969, dHopper, actors1, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE, "Best First Work");
+        
+        Movie[] movies = {theGodfather, easyRider, eR, bodyHeat};
+        for (Movie movie : movies) {
+            System.out.println(movie);
+            System.out.println();
         }
     }
 
