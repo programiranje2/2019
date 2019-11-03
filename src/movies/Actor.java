@@ -7,7 +7,7 @@ package movies;
 import util.Nationality;
 import util.Sex;
 
-public class Actor {
+public class Actor extends PerformingArtist {
     
     private static String definition;
     
@@ -16,6 +16,11 @@ public class Actor {
     private int age;
     private Nationality nationality;
     
+    public Actor(String name, Sex sex, int age, Nationality nationality, PerformingArt performingArt) {
+        this(name, sex, age, nationality);
+        this.performingArt = performingArt;
+    }
+
     static {
         definition = "A person who portrays a character in a performance.";
     }
@@ -36,6 +41,11 @@ public class Actor {
         return definition;
     }
     
+    @Override
+    public void showArt() {
+        System.out.println("Art: " + this.performingArt);
+    }
+
     @Override
     public String toString() {
         // TODO Auto-generated method stub

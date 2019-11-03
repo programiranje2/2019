@@ -27,7 +27,9 @@ public class Main {
 //        t.testArrayLists();
 //        t.testGregorianCalendar();
 //        t.testInheritance();
-        t.testPolymorphism();
+//        t.testPolymorphism();
+//        t.testEquals();
+        t.testAbstractClasses();
     }
     
 }

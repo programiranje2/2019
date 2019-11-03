@@ -10,7 +10,7 @@ import util.Vehicle;
 
 public class RoadMovie extends Movie {
     
-    private Vehicle vehicle;
+    protected Vehicle vehicle;
 
     public RoadMovie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate, Vehicle vehicle) {
         super(title, year, director, actors, openingDate);
@@ -62,6 +62,7 @@ public class RoadMovie extends Movie {
     @Override
     public String toString() {
         return super.toString() + "\nVehicle: " + this.vehicle;
+//        return super.toString() + "\nVehicle: " + this.vehicle + this.title;  // doesn't compile if title is private, change it to protected
     }
 
     public Vehicle getVehicle() {

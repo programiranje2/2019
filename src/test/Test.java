@@ -15,6 +15,8 @@ import movies.Cast;
 import movies.CrimeMovie;
 import movies.Director;
 import movies.Movie;
+import movies.PerformingArt;
+import movies.PerformingArtist;
 import movies.RoadMovie;
 import movies.Subgenre;
 import util.Nationality;
@@ -319,5 +321,37 @@ public class Test {
             System.out.println();
         }
     }
-
+    
+    public void testEquals() {
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Actor[] actors1 = {dennisHopper, peterFonda, jackNicholson};
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+        RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
+        
+        System.out.println(easyRider.equals(new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+        System.out.println(easyRider.equals(new Movie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+        System.out.println(easyRider.equals(new Movie("Easy Rider", 1967, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+    }
+    
+    public void testAbstractClasses() {
+//        PerformingArtist pa = new PerformingArtist();         // No! Cannot instantiate abstract class!
+        PerformingArtist performingArtist = new PerformingArtist(PerformingArt.ACTING) {
+            @Override
+            public void showArt() {
+                // TODO Auto-generated method stub
+                System.out.println("Art: " + "a demo implementation");
+            }
+        };
+        performingArtist.showArt();
+        
+        Actor alPacino = new Actor("Al Pacino", Sex.MALE, 79, Nationality.USA, PerformingArt.ACTING);
+        alPacino.showArt();
+    }
+    
 }

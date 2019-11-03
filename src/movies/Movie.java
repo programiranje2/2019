@@ -9,11 +9,11 @@ import java.util.GregorianCalendar;
 
 public class Movie {
     
-    private String title;
-    private int year;
-    private Director director;
-    private Actor[] actors;
-    private GregorianCalendar openingDate;
+    protected String title;
+    protected int year;
+    protected Director director;
+    protected Actor[] actors;
+    protected GregorianCalendar openingDate;
     
     public Movie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate) {
         super();
@@ -102,6 +102,18 @@ public class Movie {
         return this.title + ", " + this.year + '\n' + this.director + 
                 "\nStarring: " + String.join(", ", actorNames) + 
                 "\nOpening date: " + (new SimpleDateFormat("EEE, MMM dd, yyyy").format(this.openingDate.getTime()));
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Movie)) {
+            return false;
+        }
+        Movie m = (Movie) obj;
+        if (!((m.title.equals(this.title) && (m.director.equals(this.director) && (m.year == this.year))))) {
+            return false;
+        }
+        return true;
     }
     
     public String getTitle() {
