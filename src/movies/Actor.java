@@ -7,7 +7,7 @@ package movies;
 import util.Nationality;
 import util.Sex;
 
-public class Actor extends PerformingArtist {
+public class Actor extends PerformingArtist implements CrewMember {
     
     private static String definition;
     
@@ -44,6 +44,16 @@ public class Actor extends PerformingArtist {
     @Override
     public void showArt() {
         System.out.println("Art: " + this.performingArt);
+    }
+
+    @Override
+    public void showRole() {
+        System.out.println("\t" + (this.sex == Sex.FEMALE ? "actress" : "actor"));
+    }
+
+    @Override
+    public boolean isCoreMember() {
+        return true;
     }
 
     @Override

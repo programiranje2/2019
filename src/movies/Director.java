@@ -6,7 +6,7 @@ package movies;
 
 import util.Nationality;
 
-public class Director {
+public class Director implements CrewMember {
     
     private String name;
     private boolean alive;
@@ -21,6 +21,16 @@ public class Director {
     
     public void signalShooting(String signal) {
         System.out.println(signal);
+    }
+    
+    @Override
+    public void showRole() {
+        System.out.println("\trole: director");
+    }
+
+    @Override
+    public boolean isCoreMember() {
+        return true;
     }
     
     @Override
@@ -59,7 +69,5 @@ public class Director {
     public void setNationality(Nationality nationality) {
         this.nationality = nationality;
     }
-    
-    
 
 }

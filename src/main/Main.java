@@ -29,7 +29,9 @@ public class Main {
 //        t.testInheritance();
 //        t.testPolymorphism();
 //        t.testEquals();
-        t.testAbstractClasses();
+//        t.testAbstractClasses();
+//        t.testInterfaces();
+        t.testIterators();
     }
     
 }

@@ -7,11 +7,14 @@ package test;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 import movies.Actor;
 import movies.AwardedRoadMovie;
 import movies.Cast;
+import movies.CrewMember;
 import movies.CrimeMovie;
 import movies.Director;
 import movies.Movie;
@@ -350,8 +353,58 @@ public class Test {
         };
         performingArtist.showArt();
         
-        Actor alPacino = new Actor("Al Pacino", Sex.MALE, 79, Nationality.USA, PerformingArt.ACTING);
+        PerformingArtist alPacino = new Actor("Al Pacino", Sex.MALE, 79, Nationality.USA, PerformingArt.ACTING);
         alPacino.showArt();
+    }
+    
+    public void testInterfaces() {
+//        CrewMember alPacino = new Actor("Al Pacino", Sex.MALE, 79, Nationality.USA, PerformingArt.ACTING);
+//        System.out.println(alPacino);
+//        alPacino.showRole();
+//        if (alPacino.isCoreMember()) {
+//            System.out.println("\t(core member)");
+//        }
+//        CrewMember dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+//        System.out.println(dHopper);
+//        dHopper.showRole();
+//        if (dHopper.isCoreMember()) {
+//            System.out.println("\t(core member)");
+//        }
+//        System.out.println();
+        
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        
+        List<Actor> actors = new ArrayList<Actor>();
+        actors.add(dennisHopper);
+        actors.add(peterFonda);
+        actors.add(jackNicholson);
+        System.out.println(actors);
+        
+        for (Actor actor : actors) {
+            actors.remove(actor);                       // DANGEROUS! ConcurrentModificationException!
+        }
+     }
+    
+    public void testIterators() {
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        
+        List<Actor> actors = new ArrayList<Actor>();
+        actors.add(dennisHopper);
+        actors.add(peterFonda);
+        actors.add(jackNicholson);
+        System.out.println(actors);
+        
+        Iterator<Actor> i = actors.iterator();
+        while (i.hasNext()) {
+            i.next();
+//            i.remove();
+        }
+        System.out.println(actors);
+        System.out.println(i.hasNext());
     }
     
 }
