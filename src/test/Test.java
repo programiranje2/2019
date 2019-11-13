@@ -4,6 +4,15 @@
  */
 package test;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
@@ -18,6 +27,7 @@ import movies.CrewMember;
 import movies.CrimeMovie;
 import movies.Director;
 import movies.Movie;
+import movies.MovieYearException;
 import movies.PerformingArt;
 import movies.PerformingArtist;
 import movies.RoadMovie;
@@ -241,13 +251,19 @@ public class Test {
         easyRiderCast.addActor(dennisHopper);
         easyRiderCast.addActor(peterFonda);
         easyRiderCast.addActor(jackNicholson);
-        Movie easyRider = new Movie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12));
-        System.out.println(easyRider);
-        System.out.println();
-        if (easyRider.getOpeningDate().before(new GregorianCalendar(2000, 0, 1))) {
-            System.out.println("It was long ago...");
-        } else {
-            System.out.println("");
+        Movie easyRider;
+        try {
+            easyRider = new Movie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12));
+            System.out.println(easyRider);
+            System.out.println();
+            if (easyRider.getOpeningDate().before(new GregorianCalendar(2000, 0, 1))) {
+                System.out.println("It was long ago...");
+            } else {
+                System.out.println("");
+            }
+        } catch (MovieYearException e) {
+            System.err.println(e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -256,7 +272,13 @@ public class Test {
         Actor marlonBrando = new Actor("Marlon Brando", Sex.MALE, -1, Nationality.USA);
         Director francesFordCoppola = new Director("Frances Ford Coppola", true, Nationality.USA);
         Actor[] actors = {alPacino, marlonBrando};
-        Movie theGodfather = new Movie("The Godfather", 1970, francesFordCoppola, actors, new GregorianCalendar(1972, 2, 14));
+        Movie theGodfather = null;
+        try {
+            theGodfather = new Movie("The Godfather", 1970, francesFordCoppola, actors, new GregorianCalendar(1972, 2, 14));
+        } catch (MovieYearException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
         Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
         Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
@@ -267,26 +289,35 @@ public class Test {
         easyRiderCast.addActor(dennisHopper);
         easyRiderCast.addActor(peterFonda);
         easyRiderCast.addActor(jackNicholson);
-        RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
-        
-        Actor williamHurt = new Actor("William Hurt", Sex.MALE, 70, Nationality.USA);
-        Actor kathleenTurner = new Actor("Kathleen Turner", Sex.FEMALE, 60, Nationality.USA);
-        Director lawrenceKasdan = new Director("Lawrence Kasdan", true, Nationality.USA);
-        Cast bodyHeatCast = new Cast();
-        easyRiderCast.addActor(williamHurt);
-        easyRiderCast.addActor(kathleenTurner);
-        CrimeMovie bodyHeat = new CrimeMovie("Body Heat", 1981, lawrenceKasdan, bodyHeatCast, new GregorianCalendar(1981, 4, 22), Subgenre.FILM_NOIR);
-        
-        AwardedRoadMovie eR = new AwardedRoadMovie("Easy Rider", 1969, dHopper, actors1, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE, "Best First Work");
-        
-        System.out.println(theGodfather);
-        System.out.println(easyRider);
-        System.out.println(eR);
-        System.out.println(bodyHeat);
-
+        RoadMovie easyRider;
+        CrimeMovie bodyHeat;
+        AwardedRoadMovie eR;
+        try {
+            easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
+            
+            Actor williamHurt = new Actor("William Hurt", Sex.MALE, 70, Nationality.USA);
+            Actor kathleenTurner = new Actor("Kathleen Turner", Sex.FEMALE, 60, Nationality.USA);
+            Director lawrenceKasdan = new Director("Lawrence Kasdan", true, Nationality.USA);
+            Cast bodyHeatCast = new Cast();
+            easyRiderCast.addActor(williamHurt);
+            easyRiderCast.addActor(kathleenTurner);
+            bodyHeat = new CrimeMovie("Body Heat", 1981, lawrenceKasdan, bodyHeatCast, new GregorianCalendar(1981, 4, 22), Subgenre.FILM_NOIR);
+            
+            eR = new AwardedRoadMovie("Easy Rider", 1969, dHopper, actors1, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE, "Best First Work");
+            
+            System.out.println(theGodfather);
+            System.out.println(easyRider);
+            System.out.println(eR);
+            System.out.println(bodyHeat);
+            
 //        easyRider.getAwards();           // No way!!! easyRider is a RoadMovie, and RoadMovie doesn't have getAwards()
-        eR.getAwards();                 // this is OK
-        eR.getTitle();                  // this is also OK, because of the inheritance
+            eR.getAwards();                 // this is OK
+            eR.getTitle();                  // this is also OK, because of the inheritance
+        } catch (MovieYearException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
         
     }
     
@@ -295,7 +326,13 @@ public class Test {
         Actor marlonBrando = new Actor("Marlon Brando", Sex.MALE, -1, Nationality.USA);
         Director francesFordCoppola = new Director("Frances Ford Coppola", true, Nationality.USA);
         Actor[] actors = {alPacino, marlonBrando};
-        Movie theGodfather = new Movie("The Godfather", 1970, francesFordCoppola, actors, new GregorianCalendar(1972, 2, 14));
+        Movie theGodfather = null;
+        try {
+            theGodfather = new Movie("The Godfather", 1970, francesFordCoppola, actors, new GregorianCalendar(1972, 2, 14));
+        } catch (MovieYearException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         
         Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
         Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
@@ -306,22 +343,27 @@ public class Test {
         easyRiderCast.addActor(dennisHopper);
         easyRiderCast.addActor(peterFonda);
         easyRiderCast.addActor(jackNicholson);
-        RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
-        
-        Actor williamHurt = new Actor("William Hurt", Sex.MALE, 70, Nationality.USA);
-        Actor kathleenTurner = new Actor("Kathleen Turner", Sex.FEMALE, 60, Nationality.USA);
-        Director lawrenceKasdan = new Director("Lawrence Kasdan", true, Nationality.USA);
-        Cast bodyHeatCast = new Cast();
-        easyRiderCast.addActor(williamHurt);
-        easyRiderCast.addActor(kathleenTurner);
-        CrimeMovie bodyHeat = new CrimeMovie("Body Heat", 1981, lawrenceKasdan, bodyHeatCast, new GregorianCalendar(1981, 4, 22), Subgenre.FILM_NOIR);
-        
-        AwardedRoadMovie eR = new AwardedRoadMovie("Easy Rider", 1969, dHopper, actors1, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE, "Best First Work");
-        
-        Movie[] movies = {theGodfather, easyRider, eR, bodyHeat};
-        for (Movie movie : movies) {
-            System.out.println(movie);
-            System.out.println();
+        try {
+            RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
+            
+            Actor williamHurt = new Actor("William Hurt", Sex.MALE, 70, Nationality.USA);
+            Actor kathleenTurner = new Actor("Kathleen Turner", Sex.FEMALE, 60, Nationality.USA);
+            Director lawrenceKasdan = new Director("Lawrence Kasdan", true, Nationality.USA);
+            Cast bodyHeatCast = new Cast();
+            easyRiderCast.addActor(williamHurt);
+            easyRiderCast.addActor(kathleenTurner);
+            CrimeMovie bodyHeat = new CrimeMovie("Body Heat", 1981, lawrenceKasdan, bodyHeatCast, new GregorianCalendar(1981, 4, 22), Subgenre.FILM_NOIR);
+            
+            AwardedRoadMovie eR = new AwardedRoadMovie("Easy Rider", 1969, dHopper, actors1, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE, "Best First Work");
+            
+            Movie[] movies = {theGodfather, easyRider, eR, bodyHeat};
+            for (Movie movie : movies) {
+                System.out.println(movie);
+                System.out.println();
+            }
+        } catch (MovieYearException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
     
@@ -335,11 +377,16 @@ public class Test {
         easyRiderCast.addActor(dennisHopper);
         easyRiderCast.addActor(peterFonda);
         easyRiderCast.addActor(jackNicholson);
-        RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
-        
-        System.out.println(easyRider.equals(new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
-        System.out.println(easyRider.equals(new Movie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
-        System.out.println(easyRider.equals(new Movie("Easy Rider", 1967, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+        try {
+            RoadMovie easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12), Vehicle.BIKE);
+            
+            System.out.println(easyRider.equals(new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+            System.out.println(easyRider.equals(new Movie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+            System.out.println(easyRider.equals(new Movie("Easy Rider", 1967, dHopper, easyRiderCast, new GregorianCalendar(1969, 6, 12))));
+        } catch (MovieYearException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     public void testAbstractClasses() {
@@ -405,6 +452,82 @@ public class Test {
         }
         System.out.println(actors);
         System.out.println(i.hasNext());
+    }
+    
+    public void testExceptions() {
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Actor[] actors1 = {dennisHopper, peterFonda, jackNicholson};
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+        RoadMovie easyRider = null;
+        try {
+            easyRider = new RoadMovie("Easy Rider", 1969, dHopper, easyRiderCast, new GregorianCalendar(1968, 6, 12), Vehicle.BIKE);
+        } catch (MovieYearException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            System.out.println(easyRider);
+        }
+    }
+    
+    public void testTextFiles() {
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Actor[] actors = {dennisHopper, peterFonda, jackNicholson};
+        
+        PrintWriter out = null;
+        try {
+            out = new PrintWriter(new BufferedWriter(new FileWriter(new File("actors.txt"))));
+            for (Actor actor : actors) {
+                out.println(actor.getName());
+                out.println(actor.getAge());
+            }
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            if (out != null) {
+                out.flush();
+                out.close();
+            }
+        }
+        
+        BufferedReader in = null;
+        Actor[] a = new Actor[actors.length];
+        try {
+            in = new BufferedReader(new FileReader(new File("actors.txt")));
+            for (int i = 0; i < a.length; i++) {
+                a[i] = new Actor();
+                a[i].setName(in.readLine());
+                a[i].setAge(Integer.parseInt(in.readLine()));
+                a[i].setNationality(Nationality.USA);
+                a[i].setSex(Sex.MALE);
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        for (Actor actor : a) {
+            System.out.println(actor);
+        }
+        
+        System.out.print("Enter something: ");
+        in = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            System.out.println("You entered: " + in.readLine());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
 }

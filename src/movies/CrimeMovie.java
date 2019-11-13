@@ -10,7 +10,7 @@ public class CrimeMovie extends Movie {
 
     private Subgenre subgenre;
 
-    public CrimeMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate, Subgenre subgenre) {
+    public CrimeMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate, Subgenre subgenre) throws MovieYearException {
         super(title, year, director, cast, openingDate);
         this.subgenre = subgenre;
     }

@@ -12,13 +12,13 @@ public class RoadMovie extends Movie {
     
     protected Vehicle vehicle;
 
-    public RoadMovie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate, Vehicle vehicle) {
+    public RoadMovie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate, Vehicle vehicle) throws MovieYearException {
         super(title, year, director, actors, openingDate);
         this.vehicle = vehicle;
     }
 
     public RoadMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate,
-            Vehicle vehicle) {
+            Vehicle vehicle) throws MovieYearException {
         super(title, year, director, cast, openingDate);
         this.vehicle = vehicle;
     }
@@ -27,7 +27,7 @@ public class RoadMovie extends Movie {
         super(title, year, director, actors);
     }
 
-    public RoadMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) {
+    public RoadMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) throws MovieYearException {
         super(title, year, director, cast, openingDate);
     }
 

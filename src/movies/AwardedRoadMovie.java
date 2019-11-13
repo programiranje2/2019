@@ -13,7 +13,7 @@ public class AwardedRoadMovie extends RoadMovie {
     private String awards;
 
     public AwardedRoadMovie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate,
-            Vehicle vehicle, String award) {
+            Vehicle vehicle, String award) throws MovieYearException {
         super(title, year, director, actors, openingDate, vehicle);
         this.awards = award;
     }
@@ -22,7 +22,7 @@ public class AwardedRoadMovie extends RoadMovie {
         super(title, year, director, actors);
     }
 
-    public AwardedRoadMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) {
+    public AwardedRoadMovie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) throws MovieYearException {
         super(title, year, director, cast, openingDate);
     }
 

@@ -5,6 +5,7 @@
 package movies;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class Movie {
@@ -15,8 +16,11 @@ public class Movie {
     protected Actor[] actors;
     protected GregorianCalendar openingDate;
     
-    public Movie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate) {
+    public Movie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate) throws MovieYearException {
         super();
+        if (year != openingDate.get(Calendar.YEAR)) {
+            throw new MovieYearException(year, openingDate);
+        }
         this.title = title;
         this.year = year;
         this.director = director;
@@ -36,7 +40,7 @@ public class Movie {
         this(title, year, director, cast.toArray());
     }
 
-    public Movie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) {
+    public Movie(String title, int year, Director director, Cast cast, GregorianCalendar openingDate) throws MovieYearException {
         this(title, year, director, cast.toArray(), openingDate);
     }
 
