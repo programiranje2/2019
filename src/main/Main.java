@@ -33,7 +33,10 @@ public class Main {
 //        t.testInterfaces();
 //        t.testIterators();
 //        t.testExceptions();
-        t.testTextFiles();
+//        t.testTextFiles();
+//        t.testSerialization();
+//        t.testDeserialization();
+        t.testProjectDirs();
     }
     
 }

@@ -34,6 +34,7 @@ import movies.RoadMovie;
 import movies.Subgenre;
 import util.Nationality;
 import util.Sex;
+import util.Utility;
 import util.Vehicle;
 
 public class Test {
@@ -528,6 +529,40 @@ public class Test {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+    
+    public void testSerialization() {
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Actor[] actors1 = {dennisHopper, peterFonda, jackNicholson};
+        Cast easyRiderCast = new Cast();
+        easyRiderCast.addActor(dennisHopper);
+        easyRiderCast.addActor(peterFonda);
+        easyRiderCast.addActor(jackNicholson);
+
+        Movie easyRider = new Movie("Easy Rider", 1969, dHopper, actors1);
+        easyRider.serialize("easyRider.serialized");
+        System.out.println("Serialized.");
+    }
+    
+    public void testDeserialization() {
+//        Movie m = Movie.deserialize("easyRider.serialized");
+//        System.out.println("Deserialized.");
+//        System.out.println(m.getTitle());
+//        System.out.println(m.getDirector());
+//        for (Actor actor : m.getActors()) {
+//            System.out.println(actor);
+//        }
+//        System.out.println(m.getOpeningDate().getTime());
+        System.out.println(Movie.deserialize("easyRider.serialized"));
+    }
+    
+    public void testProjectDirs() {
+        System.out.println(Utility.getProjectDir());
+        System.out.println(Utility.makeProjectSubdir("d1\\d2\\"));
+        System.out.println(Utility.getResourcesDir());
     }
     
 }

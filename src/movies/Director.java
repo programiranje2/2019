@@ -4,9 +4,11 @@
  */
 package movies;
 
+import java.io.Serializable;
+
 import util.Nationality;
 
-public class Director implements CrewMember {
+public class Director implements CrewMember, Serializable {
     
     private String name;
     private boolean alive;

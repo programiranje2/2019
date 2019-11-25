@@ -4,10 +4,12 @@
  */
 package movies;
 
+import java.io.Serializable;
+
 import util.Nationality;
 import util.Sex;
 
-public class Actor extends PerformingArtist implements CrewMember {
+public class Actor extends PerformingArtist implements CrewMember, Serializable {
     
     private static String definition;
     
