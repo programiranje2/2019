@@ -10,6 +10,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import net.miginfocom.swing.MigLayout;
+import util.Nationality;
+import util.Sex;
+import util.Utility;
+
 import javax.swing.JLabel;
 import java.awt.Color;
 import java.awt.Font;
@@ -18,18 +22,41 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+
+import movies.Actor;
+import movies.Cast;
+import movies.Director;
+import movies.Movie;
+
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Dimension;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JSeparator;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class MainAppWindow {
 
-    private JFrame frame;
+    private JFrame frmEasyRider;
     private JPanel panelNorth;
     private JPanel panelWest;
     private JPanel panelSouth;
@@ -58,6 +85,28 @@ public class MainAppWindow {
     private JRadioButton rdbtnStandard;
     private JRadioButton rdbtnAll;
     private final ButtonGroup buttonGroup = new ButtonGroup();
+    
+    private JMenuBar menuBarMain;
+    private JMenu mnFile;
+    private JMenu mnEdit;
+    private JMenu mnView;
+    private JMenu mnTest;
+    private JMenu mnHelp;
+    private JMenuItem mntmNew;
+    private JMenuItem mntmOpen;
+    private JMenuItem mntmSave;
+    private JMenuItem mntmExit;
+    private JSeparator mnFileSeparator;
+    private JMenuItem mntmCreateTestData;
+    private JMenuItem mntmReadTestData;
+    private JMenuItem mntmClearTestData;
+
+    private Actor actor;
+    private ArrayList<Actor> actors;
+    private Director director;
+    private ArrayList<Director> directors;
+    private Movie movie;
+    private ArrayList<Movie> movies;
 
     /**
      * Launch the application.
@@ -67,7 +116,7 @@ public class MainAppWindow {
             public void run() {
                 try {
                     MainAppWindow window = new MainAppWindow();
-                    window.frame.setVisible(true);
+                    window.frmEasyRider.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -86,16 +135,69 @@ public class MainAppWindow {
      * Initialize the contents of the frame.
      */
     private void initialize() {
-        frame = new JFrame();
-        frame.setBounds(100, 100, 1019, 496);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(getPanelNorth(), BorderLayout.NORTH);
-        frame.getContentPane().add(getPanelWest(), BorderLayout.WEST);
-        frame.getContentPane().add(getPanelSouth(), BorderLayout.SOUTH);
-        frame.getContentPane().add(getPanelEast(), BorderLayout.EAST);
-        frame.getContentPane().add(getPanelCenter(), BorderLayout.CENTER);
+        frmEasyRider = new JFrame();
+        frmEasyRider.setTitle("Easy Rider");
+        frmEasyRider.setBounds(100, 100, 1019, 496);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frmEasyRider.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frmEasyRider.getContentPane().add(getPanelNorth(), BorderLayout.NORTH);
+        frmEasyRider.getContentPane().add(getPanelWest(), BorderLayout.WEST);
+        frmEasyRider.getContentPane().add(getPanelSouth(), BorderLayout.SOUTH);
+        frmEasyRider.getContentPane().add(getPanelEast(), BorderLayout.EAST);
+        frmEasyRider.getContentPane().add(getPanelCenter(), BorderLayout.CENTER);
+        frmEasyRider.setJMenuBar(getMenuBarMain());
+        
+        deserialize("Test data.serialized");
+        addMovieTitles(getComboBoxMovies(), movies);
+        
     }
 
+    private void serialize(String filename) {
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(new File(Utility.getResourcesDir() + filename)))) {
+            out.writeObject(actors);
+            out.writeObject(directors);
+            out.writeObject(movies);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    private void deserialize(String filename) {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(Utility.getResourcesDir() + filename)))) {
+            actors = (ArrayList<Actor>) in.readObject(); 
+            directors = (ArrayList<Director>) in.readObject(); 
+            movies = (ArrayList<Movie>) in.readObject(); 
+        } catch (FileNotFoundException e) {
+            // Do nothing if movies.serialized is not found
+            // e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
+    private void addMovieTitles(JComboBox<String> cb, ArrayList<Movie> m) {
+        for (Movie movie : m) {
+            cb.addItem(movie.getTitle());
+        }
+    }
+
+    private void addActorNames(JComboBox<String> cb, Actor[] a) {
+        for (Actor actor : a) {
+            cb.addItem(actor.getName());
+        }
+    }
+
+    private void emptyMovieTitles(JComboBox<String> cb) {
+        cb.removeAllItems();
+    }
+    
     private JPanel getPanelNorth() {
         if (panelNorth == null) {
         	panelNorth = new JPanel();
@@ -204,6 +306,27 @@ public class MainAppWindow {
     private JComboBox getComboBoxMovies() {
         if (comboBoxMovies == null) {
         	comboBoxMovies = new JComboBox();
+        	comboBoxMovies.addItemListener(new ItemListener() {
+        	    public void itemStateChanged(ItemEvent arg0) {
+        	        if (arg0.getStateChange() == ItemEvent.SELECTED) {
+        	            String title = (String) comboBoxMovies.getSelectedItem();
+        	            for (Movie m : movies) {
+                            if (m.getTitle().equals(title)) {
+                                textFieldDirector.setText(m.getDirector().getName());
+                                textFieldYear.setText(String.valueOf(m.getYear()));
+//                                comboBoxActors.removeAll();
+//                                System.out.println(comboBoxActors.getItemCount());
+                                DefaultComboBoxModel d = (DefaultComboBoxModel) comboBoxActors.getModel();
+                                d.removeAllElements();
+                                addActorNames(comboBoxActors, m.getActors());
+                                break;
+                            }
+                        }
+        	        }
+        	    }
+        	});
+//            comboBoxMovies.addItem("Easy Rider");
+//            comboBoxMovies.addItem("Blade Runner");
         }
         return comboBoxMovies;
     }
@@ -260,6 +383,11 @@ public class MainAppWindow {
     private JButton getBtnNewActor() {
         if (btnNewActor == null) {
         	btnNewActor = new JButton("New actor");
+        	btnNewActor.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent e) {
+        	        
+        	    }
+        	});
         }
         return btnNewActor;
     }
@@ -329,5 +457,165 @@ public class MainAppWindow {
         	buttonGroup.add(rdbtnAll);
         }
         return rdbtnAll;
+    }
+    
+    private void createTestData() {
+        Actor dennisHopper = new Actor("Dennis Hopper", Sex.MALE, -1, Nationality.USA);
+        Actor peterFonda = new Actor("Peter Fonda", Sex.MALE, -1, Nationality.USA);
+        Actor jackNicholson = new Actor("Jack Nicholson", Sex.MALE, 82, Nationality.USA);
+        Director dHopper = new Director("Dennis Hopper", false, Nationality.USA);
+        Actor[] actors1 = {dennisHopper, peterFonda, jackNicholson};
+        Movie easyRider = new Movie("Easy Rider", 1969, dHopper, actors1);
+
+        Actor benAffleck = new Actor("Ben Affleck", Sex.MALE, 47, Nationality.USA);
+        Actor anaKendrick = new Actor("Ana Kendrick", Sex.FEMALE, 34, Nationality.USA);
+        Director gavinOConnor = new Director("Gavin O'Connor", true, Nationality.USA);
+        Actor[] actors2 = {benAffleck, anaKendrick};
+        Movie theAccountant = new Movie("The Accountant", 2016, gavinOConnor, actors2);
+
+        Actor harrisonFord = new Actor("Harrison Ford", Sex.MALE, 77, Nationality.USA);
+        Actor rutgerHauer = new Actor("Rutger Hauer", Sex.MALE, -1, Nationality.USA);
+        Director ridleyScott = new Director("Ridley Scott", true, Nationality.USA);
+        Actor[] actors3 = {harrisonFord, rutgerHauer};
+        Movie bladeRunner = new Movie("Blade Runner", 1982, ridleyScott, actors3);
+        
+        actors = new ArrayList<Actor>();
+        actors.add(peterFonda);
+        actors.add(dennisHopper);
+        actors.add(jackNicholson);
+        actors.add(benAffleck);
+        actors.add(anaKendrick);
+        actors.add(harrisonFord);
+        actors.add(rutgerHauer);
+        
+        directors = new ArrayList<Director>();
+        directors.add(dHopper);
+        directors.add(gavinOConnor);
+        directors.add(ridleyScott);
+        
+        movies = new ArrayList<Movie>();
+        movies.add(easyRider);
+        movies.add(theAccountant);
+        movies.add(bladeRunner);
+
+    }
+    
+    private JMenuBar getMenuBarMain() {
+        if (menuBarMain == null) {
+        	menuBarMain = new JMenuBar();
+        	menuBarMain.add(getMnFile());
+        	menuBarMain.add(getMnEdit());
+        	menuBarMain.add(getMnView());
+        	menuBarMain.add(getMnTest());
+        	menuBarMain.add(getMnHelp());
+        }
+        return menuBarMain;
+    }
+    private JMenu getMnFile() {
+        if (mnFile == null) {
+        	mnFile = new JMenu("File");
+        	mnFile.add(getMntmNew());
+        	mnFile.add(getMntmOpen());
+        	mnFile.add(getMntmSave());
+        	mnFile.add(getMnFileSeparator());
+        	mnFile.add(getMntmExit());
+        }
+        return mnFile;
+    }
+    private JMenu getMnEdit() {
+        if (mnEdit == null) {
+        	mnEdit = new JMenu("Edit");
+        }
+        return mnEdit;
+    }
+    private JMenu getMnView() {
+        if (mnView == null) {
+        	mnView = new JMenu("View");
+        }
+        return mnView;
+    }
+    private JMenu getMnTest() {
+        if (mnTest == null) {
+        	mnTest = new JMenu("Test");
+        	mnTest.add(getMntmCreateTestData());
+        	mnTest.add(getMntmReadTestData());
+        	mnTest.add(getMntmClearTestData());
+        }
+        return mnTest;
+    }
+    private JMenu getMnHelp() {
+        if (mnHelp == null) {
+        	mnHelp = new JMenu("Help");
+        }
+        return mnHelp;
+    }
+    private JMenuItem getMntmNew() {
+        if (mntmNew == null) {
+        	mntmNew = new JMenuItem("New...");
+        }
+        return mntmNew;
+    }
+    private JMenuItem getMntmOpen() {
+        if (mntmOpen == null) {
+        	mntmOpen = new JMenuItem("Open...");
+        }
+        return mntmOpen;
+    }
+    private JMenuItem getMntmSave() {
+        if (mntmSave == null) {
+        	mntmSave = new JMenuItem("Save...");
+        }
+        return mntmSave;
+    }
+    private JMenuItem getMntmExit() {
+        if (mntmExit == null) {
+        	mntmExit = new JMenuItem("Exit");
+        }
+        return mntmExit;
+    }
+    private JSeparator getMnFileSeparator() {
+        if (mnFileSeparator == null) {
+        	mnFileSeparator = new JSeparator();
+        }
+        return mnFileSeparator;
+    }
+    private JMenuItem getMntmCreateTestData() {
+        if (mntmCreateTestData == null) {
+        	mntmCreateTestData = new JMenuItem("Create test data");
+        	mntmCreateTestData.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent arg0) {
+        	        createTestData();
+        	        serialize("Test data.serialized");
+        	        JOptionPane.showMessageDialog(frmEasyRider, "Test data created.");
+        	    }
+        	});
+        }
+        return mntmCreateTestData;
+    }
+    private JMenuItem getMntmReadTestData() {
+        if (mntmReadTestData == null) {
+        	mntmReadTestData = new JMenuItem("Read test data");
+        	mntmReadTestData.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent arg0) {
+        	        deserialize("Test data.serialized");
+        	        addMovieTitles(getComboBoxMovies(), movies);
+        	    }
+        	});
+        }
+        return mntmReadTestData;
+    }
+    private JMenuItem getMntmClearTestData() {
+        if (mntmClearTestData == null) {
+        	mntmClearTestData = new JMenuItem("Clear test data");
+        	mntmClearTestData.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent e) {
+        	        actors = null;
+        	        directors = null;
+        	        movies = null;
+        	        emptyMovieTitles(getComboBoxMovies());
+        	    }
+        	});
+        }
+        return mntmClearTestData;
     }
 }

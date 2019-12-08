@@ -18,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import javax.swing.Icon;
+
 public class Movie implements Serializable {
     
     static final long serialVersionUID = 4111L;
@@ -27,7 +29,16 @@ public class Movie implements Serializable {
     protected Director director;
     protected Actor[] actors;
     protected GregorianCalendar openingDate;
+    protected String description;
+    protected Icon icon;
     
+    public Movie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate,
+            String description, Icon icon) throws MovieYearException {
+        this(title, year, director, actors, openingDate);
+        this.description = description;
+        this.icon = icon;
+    }
+
     public Movie(String title, int year, Director director, Actor[] actors, GregorianCalendar openingDate) throws MovieYearException {
         super();
         if (year != openingDate.get(Calendar.YEAR)) {
@@ -210,6 +221,22 @@ public class Movie implements Serializable {
 
     public void setOpeningDate(GregorianCalendar openingDate) {
         this.openingDate = openingDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Icon icon) {
+        this.icon = icon;
     }
 
 }
