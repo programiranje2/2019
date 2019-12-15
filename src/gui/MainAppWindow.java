@@ -22,6 +22,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ImageIcon;
 import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import movies.Actor;
 import movies.Cast;
@@ -29,6 +30,7 @@ import movies.Director;
 import movies.Movie;
 
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.Dimension;
@@ -37,10 +39,12 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -67,7 +71,7 @@ public class MainAppWindow {
     private JScrollPane scrollPaneLeft;
     private JScrollPane scrollPaneRight;
     private JTextArea textAreaLeft;
-    private JLabel label;
+    private JLabel lblIllustration;
     private JLabel lblMovies_1;
     private JComboBox comboBoxMovies;
     private JLabel lblYear;
@@ -98,8 +102,10 @@ public class MainAppWindow {
     private JMenuItem mntmExit;
     private JSeparator mnFileSeparator;
     private JMenuItem mntmCreateTestData;
-    private JMenuItem mntmReadTestData;
+    private JMenuItem mntmLoadTestData;
     private JMenuItem mntmClearTestData;
+    
+    private NewMovieDialog newMovieDialog;
 
     private Actor actor;
     private ArrayList<Actor> actors;
@@ -107,6 +113,7 @@ public class MainAppWindow {
     private ArrayList<Director> directors;
     private Movie movie;
     private ArrayList<Movie> movies;
+    private JButton btnSelectDescription;
 
     /**
      * Launch the application.
@@ -137,7 +144,7 @@ public class MainAppWindow {
     private void initialize() {
         frmEasyRider = new JFrame();
         frmEasyRider.setTitle("Easy Rider");
-        frmEasyRider.setBounds(100, 100, 1019, 496);
+        frmEasyRider.setBounds(100, 100, 1169, 634);
 //        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frmEasyRider.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frmEasyRider.getContentPane().add(getPanelNorth(), BorderLayout.NORTH);
@@ -194,8 +201,25 @@ public class MainAppWindow {
         }
     }
 
-    private void emptyMovieTitles(JComboBox<String> cb) {
+    private void clearComboBox(JComboBox<String> cb) {
         cb.removeAllItems();
+    }
+    
+    private String readAllLinesFromTextFile(String filename) {
+        StringBuffer sb = new StringBuffer();
+        try (BufferedReader in = new BufferedReader(new FileReader(new File(filename)))) {
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return sb.toString();
     }
     
     private JPanel getPanelNorth() {
@@ -209,15 +233,16 @@ public class MainAppWindow {
         if (panelWest == null) {
         	panelWest = new JPanel();
         	panelWest.setPreferredSize(new Dimension(150, 10));
-        	panelWest.setLayout(new MigLayout("", "[grow]", "[][][][][][][grow][][]"));
+        	panelWest.setLayout(new MigLayout("", "[grow]", "[][][][][][][grow][][][]"));
         	panelWest.add(getLblMovies_1(), "cell 0 0");
         	panelWest.add(getComboBoxMovies(), "cell 0 1,growx");
         	panelWest.add(getLblYear(), "cell 0 2");
         	panelWest.add(getTextFieldYear(), "cell 0 3,growx");
         	panelWest.add(getLblDirector(), "cell 0 4");
         	panelWest.add(getTextFieldDirector(), "cell 0 5,growx");
-        	panelWest.add(getBtnSelectIllustration(), "cell 0 7,growx");
-        	panelWest.add(getBtnSaveMovie(), "cell 0 8,growx");
+        	panelWest.add(getBtnSelectDescription(), "cell 0 7,growx");
+        	panelWest.add(getBtnSelectIllustration(), "cell 0 8,growx");
+        	panelWest.add(getBtnSaveMovie(), "cell 0 9,growx");
         }
         return panelWest;
     }
@@ -279,23 +304,25 @@ public class MainAppWindow {
     private JScrollPane getScrollPaneRight() {
         if (scrollPaneRight == null) {
         	scrollPaneRight = new JScrollPane();
-        	scrollPaneRight.setViewportView(getLabel());
+        	scrollPaneRight.setViewportView(getLblIllustration());
         }
         return scrollPaneRight;
     }
     private JTextArea getTextAreaLeft() {
         if (textAreaLeft == null) {
         	textAreaLeft = new JTextArea();
+        	textAreaLeft.setLineWrap(true);
+        	textAreaLeft.setWrapStyleWord(true);
         }
         return textAreaLeft;
     }
-    private JLabel getLabel() {
-        if (label == null) {
-        	label = new JLabel("");
-        	label.setHorizontalAlignment(SwingConstants.CENTER);
-        	label.setIcon(new ImageIcon("M:\\Vladan\\Courses\\P2\\My Java Programs\\Eclipse Workspace\\Easy Rider\\resources\\Easy Rider.jpg"));
+    private JLabel getLblIllustration() {
+        if (lblIllustration == null) {
+        	lblIllustration = new JLabel("");
+        	lblIllustration.setHorizontalAlignment(SwingConstants.CENTER);
+        	lblIllustration.setIcon(new ImageIcon(Utility.getResourcesDir() + "movies-tiles.jpg"));
         }
-        return label;
+        return lblIllustration;
     }
     private JLabel getLblMovies_1() {
         if (lblMovies_1 == null) {
@@ -356,15 +383,111 @@ public class MainAppWindow {
         }
         return textFieldDirector;
     }
+    private JButton getBtnSelectDescription() {
+        if (btnSelectDescription == null) {
+            btnSelectDescription = new JButton("Select description");
+            btnSelectDescription.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent arg0) {
+                    JFileChooser movieDescriptionChooser = new JFileChooser();
+                    movieDescriptionChooser.setCurrentDirectory(new File(Utility.getResourcesDir()));
+//                    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+//                            "Image files", "jpg", "gif", "png", "jpeg");
+                    FileNameExtensionFilter txtFiles = new FileNameExtensionFilter(
+                            "Movie description files", "txt");
+                    movieDescriptionChooser.setFileFilter(txtFiles);
+                    int returnVal = movieDescriptionChooser.showOpenDialog(frmEasyRider);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+//                     System.out.println("You chose to open this file: " +
+//                          movieDescriptionChooser.getSelectedFile().getName());
+                        textAreaLeft.setText(readAllLinesFromTextFile(Utility.getResourcesDir() + movieDescriptionChooser.getSelectedFile().getName()));
+                    }
+                }
+            });
+        }
+        return btnSelectDescription;
+    }
     private JButton getBtnSelectIllustration() {
         if (btnSelectIllustration == null) {
         	btnSelectIllustration = new JButton("Select illustration");
+        	btnSelectIllustration.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent arg0) {
+                    JFileChooser movieIllustrationChooser = new JFileChooser();
+                    movieIllustrationChooser.setCurrentDirectory(new File(Utility.getResourcesDir()));
+                    FileNameExtensionFilter imgFiles = new FileNameExtensionFilter(
+                            "Image files", "jpg", "gif", "png", "jpeg");
+                    movieIllustrationChooser.setFileFilter(imgFiles);
+                    int returnVal = movieIllustrationChooser.showOpenDialog(frmEasyRider);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+//                     System.out.println("You chose to open this file: " +
+//                          movieIllustrationChooser.getSelectedFile().getName());
+//                        lblIllustration.setIcon(new ImageIcon("M:\\Vladan\\Courses\\P2\\My Java Programs\\Eclipse Workspace\\Easy Rider\\resources\\Easy Rider.jpg"));
+                        lblIllustration.setIcon(new ImageIcon(Utility.getResourcesDir() + movieIllustrationChooser.getSelectedFile().getName()));
+                    }
+        	    }
+        	});
         }
         return btnSelectIllustration;
     }
     private JButton getBtnSaveMovie() {
         if (btnSaveMovie == null) {
         	btnSaveMovie = new JButton("Save movie");
+        	btnSaveMovie.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent e) {
+        	        if (actors == null) {
+        	            actors = new ArrayList<Actor>();
+        	        }
+        	        if (directors == null) {
+        	            directors = new ArrayList<Director>();
+        	        }
+        	        if (movies == null) {
+        	            movies = new ArrayList<Movie>();
+        	        }
+        	        
+        	        String title = (String) comboBoxMovies.getSelectedItem();
+        	        movie = null;
+        	        director = null;
+        	        
+        	        for (Movie m : movies) {
+                        if ((title != null) && (!title.equals("")) && (title.equals(m.getTitle()))) {
+                            movie = m;
+                            break;
+                        }
+                    }
+        	        
+        	        for (Director d : directors) {
+                        if ((textFieldDirector.getText() != null) && 
+                                (!textFieldDirector.getText().equals("") && 
+                                        d.getName().equals(textFieldDirector.getText()))) {
+                            director = d;
+                            break;
+                        }
+                    }
+
+                    if (movie != null) {
+                        if ((title != null) && (!title.equals(""))) {
+                            movie.setTitle(title);
+                        }
+                        if (director != null) {
+                            movie.setDirector(director);
+                        }
+                        if ((textAreaLeft.getText() != null) && !textAreaLeft.getText().equals("")) {
+                            movie.setDescription(textAreaLeft.getText());
+                        } else {
+                            movie.setDescription("");
+                        }
+                        if (lblIllustration.getIcon() != null) {
+                            movie.setIcon(lblIllustration.getIcon());
+                        }
+                        if (actors != null) {
+                            movie.setActors((Actor[]) actors.toArray());
+                        }
+                        
+                        movies.add(movie);
+                        JOptionPane.showMessageDialog(frmEasyRider,
+                                "Movie added to the movie list.");
+                    }
+        	    }
+        	});
         }
         return btnSaveMovie;
     }
@@ -538,7 +661,7 @@ public class MainAppWindow {
         if (mnTest == null) {
         	mnTest = new JMenu("Test");
         	mnTest.add(getMntmCreateTestData());
-        	mnTest.add(getMntmReadTestData());
+        	mnTest.add(getMntmLoadTestData());
         	mnTest.add(getMntmClearTestData());
         }
         return mnTest;
@@ -552,6 +675,18 @@ public class MainAppWindow {
     private JMenuItem getMntmNew() {
         if (mntmNew == null) {
         	mntmNew = new JMenuItem("New...");
+        	mntmNew.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent e) {
+        	        newMovieDialog = new NewMovieDialog(frmEasyRider, true);
+        	        movie = newMovieDialog.showDialog();
+        	        if (movie != null) {
+        	            comboBoxMovies.addItem(movie.getTitle());
+        	            comboBoxMovies.setSelectedIndex(comboBoxMovies.getItemCount() - 1);
+        	            textFieldDirector.setText(movie.getDirector().getName());
+        	            textFieldYear.setText(String.valueOf(movie.getYear()));
+        	        }
+        	    }
+        	});
         }
         return mntmNew;
     }
@@ -564,6 +699,24 @@ public class MainAppWindow {
     private JMenuItem getMntmSave() {
         if (mntmSave == null) {
         	mntmSave = new JMenuItem("Save...");
+        	mntmSave.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent e) {
+                    JFileChooser movieDataChooser = new JFileChooser();
+                    movieDataChooser.setCurrentDirectory(new File(Utility.getResourcesDir()));
+                    FileNameExtensionFilter serializedFiles = new FileNameExtensionFilter(
+                            "Serialized files", "serialized");
+                    movieDataChooser.setFileFilter(serializedFiles);
+                    int returnVal = movieDataChooser.showOpenDialog(frmEasyRider);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+//                     System.out.println("You chose to open this file: " +
+//                          movieIllustrationChooser.getSelectedFile().getName());
+//                        lblIllustration.setIcon(new ImageIcon("M:\\Vladan\\Courses\\P2\\My Java Programs\\Eclipse Workspace\\Easy Rider\\resources\\Easy Rider.jpg"));
+                        serialize(movieDataChooser.getSelectedFile().getName());
+                        JOptionPane.showMessageDialog(frmEasyRider,
+                                "Movie database saved.");
+                    }
+        	    }
+        	});
         }
         return mntmSave;
     }
@@ -592,17 +745,17 @@ public class MainAppWindow {
         }
         return mntmCreateTestData;
     }
-    private JMenuItem getMntmReadTestData() {
-        if (mntmReadTestData == null) {
-        	mntmReadTestData = new JMenuItem("Read test data");
-        	mntmReadTestData.addActionListener(new ActionListener() {
+    private JMenuItem getMntmLoadTestData() {
+        if (mntmLoadTestData == null) {
+        	mntmLoadTestData = new JMenuItem("Load test data");
+        	mntmLoadTestData.addActionListener(new ActionListener() {
         	    public void actionPerformed(ActionEvent arg0) {
         	        deserialize("Test data.serialized");
         	        addMovieTitles(getComboBoxMovies(), movies);
         	    }
         	});
         }
-        return mntmReadTestData;
+        return mntmLoadTestData;
     }
     private JMenuItem getMntmClearTestData() {
         if (mntmClearTestData == null) {
@@ -612,7 +765,8 @@ public class MainAppWindow {
         	        actors = null;
         	        directors = null;
         	        movies = null;
-        	        emptyMovieTitles(getComboBoxMovies());
+                    clearComboBox(getComboBoxMovies());
+                    clearComboBox(getComboBoxActors());
         	    }
         	});
         }
