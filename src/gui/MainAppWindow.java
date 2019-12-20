@@ -79,7 +79,7 @@ public class MainAppWindow {
     private JLabel lblDirector;
     private JTextField textFieldDirector;
     private JButton btnSelectIllustration;
-    private JButton btnSaveMovie;
+    private JButton btnUpdateMovie;
     private JLabel lblActors;
     private JComboBox comboBoxActors;
     private JButton btnNewActor;
@@ -154,8 +154,8 @@ public class MainAppWindow {
         frmEasyRider.getContentPane().add(getPanelCenter(), BorderLayout.CENTER);
         frmEasyRider.setJMenuBar(getMenuBarMain());
         
-        deserialize("Test data.serialized");
-        addMovieTitles(getComboBoxMovies(), movies);
+//        deserialize("Test data.serialized");
+//        addMovieTitles(getComboBoxMovies(), movies);
         
     }
 
@@ -187,6 +187,7 @@ public class MainAppWindow {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        addMovieTitles(getComboBoxMovies(), movies);
     }
     
     private void addMovieTitles(JComboBox<String> cb, ArrayList<Movie> m) {
@@ -242,7 +243,7 @@ public class MainAppWindow {
         	panelWest.add(getTextFieldDirector(), "cell 0 5,growx");
         	panelWest.add(getBtnSelectDescription(), "cell 0 7,growx");
         	panelWest.add(getBtnSelectIllustration(), "cell 0 8,growx");
-        	panelWest.add(getBtnSaveMovie(), "cell 0 9,growx");
+        	panelWest.add(getBtnUpdateMovie(), "cell 0 9,growx");
         }
         return panelWest;
     }
@@ -346,6 +347,12 @@ public class MainAppWindow {
                                 DefaultComboBoxModel d = (DefaultComboBoxModel) comboBoxActors.getModel();
                                 d.removeAllElements();
                                 addActorNames(comboBoxActors, m.getActors());
+                                if (m.getDescription() != null) {
+                                    textAreaLeft.setText(m.getDescription());
+                                }
+                                if (m.getIcon() != null) {
+                                    lblIllustration.setIcon(m.getIcon());
+                                }
                                 break;
                             }
                         }
@@ -390,8 +397,6 @@ public class MainAppWindow {
                 public void actionPerformed(ActionEvent arg0) {
                     JFileChooser movieDescriptionChooser = new JFileChooser();
                     movieDescriptionChooser.setCurrentDirectory(new File(Utility.getResourcesDir()));
-//                    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-//                            "Image files", "jpg", "gif", "png", "jpeg");
                     FileNameExtensionFilter txtFiles = new FileNameExtensionFilter(
                             "Movie description files", "txt");
                     movieDescriptionChooser.setFileFilter(txtFiles);
@@ -428,11 +433,12 @@ public class MainAppWindow {
         }
         return btnSelectIllustration;
     }
-    private JButton getBtnSaveMovie() {
-        if (btnSaveMovie == null) {
-        	btnSaveMovie = new JButton("Save movie");
-        	btnSaveMovie.addActionListener(new ActionListener() {
+    private JButton getBtnUpdateMovie() {
+        if (btnUpdateMovie == null) {
+        	btnUpdateMovie = new JButton("Update movie");
+        	btnUpdateMovie.addActionListener(new ActionListener() {
         	    public void actionPerformed(ActionEvent e) {
+        	        // check/create the relevant object lists
         	        if (actors == null) {
         	            actors = new ArrayList<Actor>();
         	        }
@@ -443,33 +449,8 @@ public class MainAppWindow {
         	            movies = new ArrayList<Movie>();
         	        }
         	        
-        	        String title = (String) comboBoxMovies.getSelectedItem();
-        	        movie = null;
-        	        director = null;
-        	        
-        	        for (Movie m : movies) {
-                        if ((title != null) && (!title.equals("")) && (title.equals(m.getTitle()))) {
-                            movie = m;
-                            break;
-                        }
-                    }
-        	        
-        	        for (Director d : directors) {
-                        if ((textFieldDirector.getText() != null) && 
-                                (!textFieldDirector.getText().equals("") && 
-                                        d.getName().equals(textFieldDirector.getText()))) {
-                            director = d;
-                            break;
-                        }
-                    }
-
+        	        // if the movie object is not null, i.e. if it was returned from the newMovieDialog
                     if (movie != null) {
-                        if ((title != null) && (!title.equals(""))) {
-                            movie.setTitle(title);
-                        }
-                        if (director != null) {
-                            movie.setDirector(director);
-                        }
                         if ((textAreaLeft.getText() != null) && !textAreaLeft.getText().equals("")) {
                             movie.setDescription(textAreaLeft.getText());
                         } else {
@@ -478,19 +459,14 @@ public class MainAppWindow {
                         if (lblIllustration.getIcon() != null) {
                             movie.setIcon(lblIllustration.getIcon());
                         }
-                        if (actors != null) {
-                            movie.setActors((Actor[]) actors.toArray());
-                        }
-                        
-                        movies.add(movie);
-                        JOptionPane.showMessageDialog(frmEasyRider,
-                                "Movie added to the movie list.");
+                        JOptionPane.showMessageDialog(frmEasyRider, "Movie updated in the movie list.");
                     }
         	    }
         	});
         }
-        return btnSaveMovie;
+        return btnUpdateMovie;
     }
+    
     private JLabel getLblActors() {
         if (lblActors == null) {
         	lblActors = new JLabel("Actors");
@@ -680,10 +656,24 @@ public class MainAppWindow {
         	        newMovieDialog = new NewMovieDialog(frmEasyRider, true);
         	        movie = newMovieDialog.showDialog();
         	        if (movie != null) {
-        	            comboBoxMovies.addItem(movie.getTitle());
-        	            comboBoxMovies.setSelectedIndex(comboBoxMovies.getItemCount() - 1);
-        	            textFieldDirector.setText(movie.getDirector().getName());
-        	            textFieldYear.setText(String.valueOf(movie.getYear()));
+                        if (movies == null) {
+                            movies = new ArrayList<Movie>();
+                        }
+                        if (actors == null) {
+                            actors = new ArrayList<Actor>();
+                        }
+                        if (directors == null) {
+                            directors = new ArrayList<Director>();
+                        }
+                        movies.add(movie);
+//                        comboBoxMovies.removeAll();
+//                        addMovieTitles(getComboBoxMovies(), movies);
+                        DefaultComboBoxModel d = (DefaultComboBoxModel) comboBoxMovies.getModel();
+                        d.removeAllElements();
+                        addMovieTitles(comboBoxMovies, movies);
+                        comboBoxMovies.setSelectedIndex(comboBoxMovies.getItemCount() - 1);
+        	            textAreaLeft.setText("");
+        	            lblIllustration.setIcon(new ImageIcon(Utility.getResourcesDir() + "movies-tiles.jpg"));
         	        }
         	    }
         	});
@@ -693,6 +683,23 @@ public class MainAppWindow {
     private JMenuItem getMntmOpen() {
         if (mntmOpen == null) {
         	mntmOpen = new JMenuItem("Open...");
+        	mntmOpen.addActionListener(new ActionListener() {
+        	    public void actionPerformed(ActionEvent arg0) {
+                    JFileChooser movieDataChooser = new JFileChooser();
+                    movieDataChooser.setCurrentDirectory(new File(Utility.getResourcesDir()));
+                    FileNameExtensionFilter serializedFiles = new FileNameExtensionFilter(
+                            "Serialized files", "serialized");
+                    movieDataChooser.setFileFilter(serializedFiles);
+                    int returnVal = movieDataChooser.showOpenDialog(frmEasyRider);
+                    if(returnVal == JFileChooser.APPROVE_OPTION) {
+//                     System.out.println("You chose to open this file: " +
+//                          movieIllustrationChooser.getSelectedFile().getName());
+//                        lblIllustration.setIcon(new ImageIcon("M:\\Vladan\\Courses\\P2\\My Java Programs\\Eclipse Workspace\\Easy Rider\\resources\\Easy Rider.jpg"));
+                        deserialize(movieDataChooser.getSelectedFile().getName());
+//                        addMovieTitles(getComboBoxMovies(), movies);
+                    }
+        	    }
+        	});
         }
         return mntmOpen;
     }
@@ -712,8 +719,7 @@ public class MainAppWindow {
 //                          movieIllustrationChooser.getSelectedFile().getName());
 //                        lblIllustration.setIcon(new ImageIcon("M:\\Vladan\\Courses\\P2\\My Java Programs\\Eclipse Workspace\\Easy Rider\\resources\\Easy Rider.jpg"));
                         serialize(movieDataChooser.getSelectedFile().getName());
-                        JOptionPane.showMessageDialog(frmEasyRider,
-                                "Movie database saved.");
+                        JOptionPane.showMessageDialog(frmEasyRider, "Movie database saved.");
                     }
         	    }
         	});
@@ -767,6 +773,10 @@ public class MainAppWindow {
         	        movies = null;
                     clearComboBox(getComboBoxMovies());
                     clearComboBox(getComboBoxActors());
+                    textFieldDirector.setText("");
+                    textFieldYear.setText("");
+                    textAreaLeft.setText("");
+                    lblIllustration.setIcon(new ImageIcon(Utility.getResourcesDir() + "movies-tiles.jpg"));
         	    }
         	});
         }

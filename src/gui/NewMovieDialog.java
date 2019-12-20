@@ -23,6 +23,8 @@ import movies.Movie;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -173,7 +175,45 @@ public class NewMovieDialog extends JDialog {
         	btnOk = new JButton("OK");
         	btnOk.addActionListener(new ActionListener() {
         	    public void actionPerformed(ActionEvent e) {
-        	        movie = null;
+//        	        movie = null;
+        	        movie = new Movie();
+        	        if ((textFieldTitle.getText() != null) && (!textFieldTitle.getText().equals(""))) {
+        	            movie.setTitle(textFieldTitle.getText());
+        	        }
+        	        if ((textFieldDirectorName.getText() != null) && (!textFieldDirectorName.getText().equals(""))) {
+        	            // set movie.director
+        	            director = new Director();
+        	            director.setName(textFieldDirectorName.getText());
+        	            director.setNationality(Nationality.valueOf((String) comboBoxDirectorNationality.getSelectedItem()));
+        	            if (((String) comboBoxAlive.getSelectedItem()).equals("ALIVE")) {
+        	                director.setAlive(true);
+        	            } else {
+        	                director.setAlive(false);
+        	            }
+        	            movie.setDirector(director);
+        	            // set movie.openingDate
+        	            int year = 0;
+        	            int month = 0;
+        	            int day = 0;
+        	            if ((textFieldYear.getText() != null) && (!textFieldYear.getText().equals(""))) {
+        	                year = Integer.parseInt(textFieldYear.getText());
+        	                movie.setYear(year);
+        	                if ((textFieldMonth.getText() != null) && (!textFieldMonth.getText().equals(""))) {
+        	                    month = Integer.parseInt(textFieldMonth.getText());
+        	                    if ((textFieldDay.getText() != null) && (!textFieldDay.getText().equals(""))) {
+        	                        day = Integer.parseInt(textFieldDay.getText());
+        	                    }
+        	                }
+        	            }
+        	            if ((year > 1900) && (year <= ((new GregorianCalendar()).get(Calendar.YEAR))) && 
+        	                    (month >= 1) && (month <= 12) && 
+        	                    (day >= 1) && (day <= 31)) {
+        	                movie.setOpeningDate(new GregorianCalendar(year, (month - 1), day));
+        	            }
+        	            // set movie.actors
+        	            movie.setActors(actors.toArray(new Actor[actors.size()]));
+        	        }
+        	        
         	        thisDialog.setVisible(false);
         	    }
         	});
@@ -336,6 +376,10 @@ public class NewMovieDialog extends JDialog {
                             break;
                         }
                     }
+//        	        // the following check is not absolutely necessary, since the actors list is initialized in the field declaration
+//        	        if (actors == null) {
+//        	            actors = new ArrayList<Actor>();
+//        	        }
         	        actors.add(actor);
         	        JOptionPane.showMessageDialog(thisDialog,
         	                "Actor added to cast.");
